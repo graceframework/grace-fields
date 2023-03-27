@@ -30,12 +30,7 @@ class FieldsGrailsPlugin extends Plugin {
 
 	@Override
 	Closure doWithSpring() {{->
-		beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
-			constraintsEvaluator = ref(CONSTRAINTS_EVALULATOR_BEAN_NAME)
-			proxyHandler = ref('proxyHandler')
-			fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')
-			grailsDomainClassMappingContext = ref('grailsDomainClassMappingContext')
-		}
+		beanPropertyAccessorFactory(BeanPropertyAccessorFactory)
 		formFieldsTemplateService(FormFieldsTemplateService)
 		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
 		domainModelService(DomainModelServiceImpl) {
