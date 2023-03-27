@@ -4,24 +4,19 @@ buildscript {
 		maven { url "https://repo.grails.org/grails/core" }
 	}
 	dependencies {
-		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-		classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
+		classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
 	}
 }
 
 version project.projectVersion
 group "org.grails.plugins"
 
-apply plugin:"eclipse"
-apply plugin:"idea"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "java-library"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.grails-plugin-publish"
-
-ext {
-	commonBuild = 'https://raw.githubusercontent.com/grails/grails-common-build/1549696f8d1a6bce3d84db9c4c1bfde61eddf175'
-
-}
+apply plugin: "org.grails.internal.grails-plugin-publish"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -32,22 +27,25 @@ repositories {
 	maven { url "https://repo.grails.org/grails/core" }
 }
 
+configurations {
+    documentation
+}
+
 dependencies {
-	provided 'org.springframework.boot:spring-boot-starter-logging'
-	provided "org.springframework.boot:spring-boot-starter-actuator"
-	provided "org.springframework.boot:spring-boot-autoconfigure"
-	provided "org.springframework.boot:spring-boot-starter-tomcat"
-
-	provided "org.grails:grails-web-boot"
-	provided "org.grails:grails-dependencies"
-	provided "javax.servlet:javax.servlet-api:$servletApiVersion"
-
-	compile "org.grails:scaffolding-core:$scaffoldingVersion"
+	implementation "org.grails:grails-web-boot"
+	implementation "org.grails:grails-plugin-validation"
+	implementation "org.grails:grails-datastore-core:7.2.1"
+	implementation "org.grails:grails-datastore-gorm:7.2.1"
+	implementation "org.grails:grails-web-gsp:5.1.0"
+	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
+	implementation "commons-lang:commons-lang:2.6"
+	compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
 	
-	testCompile "org.grails:grails-web-testing-support:2.0.0.RC1"
-	testCompile "org.grails:grails-gorm-testing-support:2.0.0.RC1"
+	testCompile "org.grails:grails-web-testing-support:2.4.1"
+	testCompile "org.grails:grails-gorm-testing-support:2.4.1"
 
-	console "org.grails:grails-console"
+    documentation "org.fusesource.jansi:jansi:1.14"
+	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
 	testCompile 'javassist:javassist:3.12.0.GA'
 	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
@@ -56,6 +54,17 @@ dependencies {
 		exclude module: 'slf4j-api'
 		exclude module: 'asm'
 	}
+}
+
+groovydoc.doFirst {
+    classpath += (configurations.documentation + configurations.compileClasspath)
+}
+
+bootJar.enabled = false
+
+jar {
+    enabled = true
+    archiveClassifier.set('')
 }
 
 grailsPublish {
@@ -74,4 +83,3 @@ grailsPublish {
 	]
 }
 
-apply from: "${commonBuild}/common-docs.gradle"
