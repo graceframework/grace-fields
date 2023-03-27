@@ -34,6 +34,9 @@ import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.PropertyAccessorFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.support.StaticMessageSource
 
 import java.lang.reflect.ParameterizedType
@@ -41,11 +44,21 @@ import java.util.regex.Pattern
 
 class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
-	GrailsApplication grailsApplication
-	ConstraintsEvaluator constraintsEvaluator
-	ProxyHandler proxyHandler
-	DomainPropertyFactory fieldsDomainPropertyFactory
-	MappingContext grailsDomainClassMappingContext
+	private GrailsApplication grailsApplication
+
+	@Lazy
+	@Autowired
+	@Qualifier('validateableConstraintsEvaluator')
+	private ConstraintsEvaluator constraintsEvaluator
+
+	@Autowired
+	private ProxyHandler proxyHandler
+
+	@Autowired
+	private DomainPropertyFactory fieldsDomainPropertyFactory
+
+	@Autowired
+	private MappingContext grailsDomainClassMappingContext
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
 		if (bean == null) {
@@ -188,5 +201,10 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	static String stripIndex(String propertyName) {
 		def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
 		matcher.matches() ? matcher[0][1] : propertyName
+	}
+
+	@Override
+	void setGrailsApplication(GrailsApplication grailsApplication) {
+		this.grailsApplication = grailsApplication
 	}
 }
