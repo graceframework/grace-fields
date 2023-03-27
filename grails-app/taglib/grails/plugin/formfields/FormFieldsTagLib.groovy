@@ -659,7 +659,7 @@ class FormFieldsTagLib {
 			return renderAssociationInput(model, attrs)
 		} else if (oneToMany) {
 			return renderOneToManyInput(model, attrs)
-		} else if (model.type in [Date, Calendar, java.sql.Date, java.sql.Time]) {
+		} else if (model.type in [Date, Calendar, java.sql.Date, java.sql.Time, java.time.Instant, java.time.LocalTime, java.time.LocalDateTime, java.time.LocalDate, java.time.ZonedDateTime, java.time.OffsetDateTime]) {
 			return renderDateTimeInput(model, attrs)
 		} else if (model.type in [byte[], Byte[], Blob]) {
 			return g.field(attrs + [type: "file"])
@@ -673,7 +673,7 @@ class FormFieldsTagLib {
 
 
 	CharSequence renderDateTimeInput(Map model, Map attrs) {
-		attrs.precision = model.type == java.sql.Time ? "minute" : "day"
+		attrs.precision = (model.type in [java.sql.Time, java.time.Instant, java.time.LocalTime, java.time.LocalDateTime, java.time.ZonedDateTime, java.time.OffsetDateTime]) ? "minute" : "day"
 		if (!model.required) {
 			attrs.noSelection = ["": ""]
 			attrs.default = "none"
