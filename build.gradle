@@ -18,8 +18,8 @@ apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.internal.grails-plugin-publish"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
 	mavenLocal()
@@ -41,16 +41,16 @@ dependencies {
 	implementation "commons-lang:commons-lang:2.6"
 	compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
 	
-	testCompile "org.grails:grails-web-testing-support:2.4.1"
-	testCompile "org.grails:grails-gorm-testing-support:2.4.1"
+	testImplementation "org.grails:grails-web-testing-support:2.4.1"
+	testImplementation "org.grails:grails-gorm-testing-support:2.4.1"
 
     documentation "org.fusesource.jansi:jansi:1.14"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
-	testCompile 'javassist:javassist:3.12.0.GA'
-	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
-	testCompile "cglib:cglib-nodep:$cglibNodepVersion"
-	testCompile("org.jodd:jodd-wot:$joddWotVersion") {
+	testImplementation 'javassist:javassist:3.12.0.GA'
+	testImplementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+	testImplementation "cglib:cglib-nodep:$cglibNodepVersion"
+	testImplementation("org.jodd:jodd-wot:$joddWotVersion") {
 		exclude module: 'slf4j-api'
 		exclude module: 'asm'
 	}
