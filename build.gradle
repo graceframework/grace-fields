@@ -2,6 +2,7 @@ buildscript {
 	repositories {
 		mavenLocal()
 		maven { url "https://repo.grails.org/grails/core" }
+        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 	}
 	dependencies {
 		classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
@@ -18,8 +19,8 @@ apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "org.grails.internal.grails-plugin-publish"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 17
+targetCompatibility = 17
 
 repositories {
 	mavenLocal()
@@ -32,25 +33,29 @@ configurations {
 }
 
 dependencies {
-	implementation "org.grails:grails-web-boot"
+	compileOnly "org.grails:grails-boot"
+	implementation "org.grails:grails-web"
 	implementation "org.grails:grails-plugin-validation"
-	implementation "org.grails:grails-datastore-core:7.2.1"
-	implementation "org.grails:grails-datastore-gorm:7.2.1"
-	implementation "org.grails:grails-web-gsp:5.1.0"
+	implementation "org.grails:grails-datastore-core:2023.0.0-SNAPSHOT", {
+        exclude group: "org.codehaus.groovy", module: "groovy"
+    }
+	implementation "org.grails:grails-datastore-gorm:2023.0.0-SNAPSHOT", {
+        exclude group: "org.codehaus.groovy", module: "groovy"
+    }
+	implementation "org.grails:grails-web-gsp"
 	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
-	compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
+	compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 	
-	testCompile "org.grails:grails-web-testing-support:2.4.1"
-	testCompile "org.grails:grails-gorm-testing-support:2.4.1"
+	testImplementation "org.grails:grails-test-support"
 
     documentation "org.fusesource.jansi:jansi:1.14"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
-	testCompile 'javassist:javassist:3.12.0.GA'
-	testCompile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
-	testCompile "cglib:cglib-nodep:$cglibNodepVersion"
-	testCompile("org.jodd:jodd-wot:$joddWotVersion") {
+	testImplementation 'javassist:javassist:3.12.0.GA'
+	testImplementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+	testImplementation "cglib:cglib-nodep:$cglibNodepVersion"
+	testImplementation("org.jodd:jodd-wot:$joddWotVersion") {
 		exclude module: 'slf4j-api'
 		exclude module: 'asm'
 	}
