@@ -93,9 +93,9 @@ class DelegatingBeanPropertyAccessorImpl implements BeanPropertyAccessor {
 
 	@Override
 	List<String> getLabelKeys() {
-		List labelKeys = []
+		List<String> labelKeys = new ArrayList<>()
 		if (rootBean) {
-			labelKeys.add("${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, ''))
+			labelKeys.add("${GrailsNameUtils.getPropertyName(rootBeanType.simpleName)}.${pathFromRoot}.label".replaceAll(/\[(.+)\]/, '').toString())
 		}
 		labelKeys.addAll(domainProperty.labelKeys)
 		labelKeys.unique()
