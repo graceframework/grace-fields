@@ -35,19 +35,18 @@ configurations {
 dependencies {
 	implementation "org.grails:grails-web-databinding"
 	implementation "org.grails:grails-plugin-validation"
-	implementation "org.grails:grails-datastore-core:7.2.1"
-	implementation "org.grails:grails-datastore-gorm:7.2.1"
+	implementation "org.grails:grails-datastore-core:$gormGspVersion"
+	implementation "org.grails:grails-datastore-gorm:$gormGspVersion"
 	implementation "org.grails:grails-web-gsp:$grailsGspVersion"
 	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
 	compileOnly "org.grails:grails-boot"
 	compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
-	
-	testImplementation "org.grails:grails-test-support"
 
     documentation "org.fusesource.jansi:jansi:1.14"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
+	testImplementation "org.grails:grails-test-support"
 	testImplementation 'javassist:javassist:3.12.0.GA'
 	testImplementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 	testImplementation "cglib:cglib-nodep:$cglibNodepVersion"
