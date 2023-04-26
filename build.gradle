@@ -35,8 +35,8 @@ configurations {
 dependencies {
 	implementation "org.grails:grails-web-databinding"
 	implementation "org.grails:grails-plugin-validation"
-	implementation "org.grails:grails-datastore-core:$gormGspVersion"
-	implementation "org.grails:grails-datastore-gorm:$gormGspVersion"
+	implementation "org.grails:grails-datastore-core:$gormVersion"
+	implementation "org.grails:grails-datastore-gorm:$gormVersion"
 	implementation "org.grails:grails-web-gsp:$grailsGspVersion"
 	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
