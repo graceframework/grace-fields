@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 	}
 	dependencies {
-		classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
 	}
 }
 
@@ -33,25 +33,25 @@ configurations {
 }
 
 dependencies {
-	compileOnly "org.grails:grails-boot"
 	implementation "org.grails:grails-web"
-	implementation "org.grails:grails-plugin-validation"
-	implementation "org.grails:grails-datastore-core:2023.0.0-SNAPSHOT", {
-        exclude group: "org.codehaus.groovy", module: "groovy"
-    }
-	implementation "org.grails:grails-datastore-gorm:2023.0.0-SNAPSHOT", {
-        exclude group: "org.codehaus.groovy", module: "groovy"
-    }
+	implementation "org.grails:grails-web-databinding"
 	implementation "org.grails:grails-web-gsp"
+	implementation "org.grails:grails-plugin-validation"
+	implementation "org.grails:grails-datastore-core:$gormVersion", {
+        exclude group: "org.codehaus.groovy", module: "groovy"
+    }
+	implementation "org.grails:grails-datastore-gorm:$gormVersion", {
+        exclude group: "org.codehaus.groovy", module: "groovy"
+    }
 	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
 	compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
-	
-	testImplementation "org.grails:grails-test-support"
+	compileOnly "org.grails:grails-boot"
 
     documentation "org.fusesource.jansi:jansi:1.14"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
+	testImplementation "org.grails:grails-test-support"
 	testImplementation 'javassist:javassist:3.12.0.GA'
 	testImplementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 	testImplementation "cglib:cglib-nodep:$cglibNodepVersion"

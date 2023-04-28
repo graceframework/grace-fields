@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 @PluginSource
-class Application  {
+class Application {
 
     static void main(String[] args) {
         Grails.run(Application, args)
