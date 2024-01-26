@@ -175,3 +175,9 @@ afterEvaluate {
         sign publishing.publications.maven
     }
 }
+
+jar {
+    enabled = true
+    archiveClassifier.set('')
+    includeEmptyDirs = false
+}
