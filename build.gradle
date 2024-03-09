@@ -1,31 +1,42 @@
 buildscript {
 	repositories {
-		mavenLocal()
-		maven { url "https://repo.grails.org/grails/core" }
+		// mavenLocal()
+		mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
         maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+        if (project.projectVersion.endsWith('-SNAPSHOT')) {
+            maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+        }
 	}
 	dependencies {
-		classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+		classpath "org.graceframework:grace-gradle-plugin:$graceVersion"
+        classpath "io.github.gradle-nexus:publish-plugin:1.3.0"
 	}
 }
 
+ext."signing.keyId" = project.hasProperty("signing.keyId") ? project.getProperty('signing.keyId') : System.getenv('SIGNING_KEY')
+ext."signing.password" = project.hasProperty("signing.password") ? project.getProperty('signing.password') : System.getenv('SIGNING_PASSPHRASE')
+ext."signing.secretKeyRingFile" = project.hasProperty("signing.secretKeyRingFile") ? project.getProperty('signing.secretKeyRingFile') : ("${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
+ext.isReleaseVersion = !projectVersion.endsWith("SNAPSHOT")
+
 version project.projectVersion
-group "org.grails.plugins"
+group "org.graceframework.plugins"
 
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "java-library"
-apply plugin: "org.grails.grails-plugin"
-apply plugin: "org.grails.grails-gsp"
-apply plugin: "org.grails.internal.grails-plugin-publish"
-
-sourceCompatibility = 11
-targetCompatibility = 11
+apply plugin: "org.graceframework.grace-plugin"
+apply plugin: "org.graceframework.grace-gsp"
+apply plugin: "io.github.gradle-nexus.publish-plugin"
+apply plugin: "maven-publish"
+apply plugin: "signing"
 
 repositories {
-	mavenLocal()
+	// mavenLocal()
 	mavenCentral()
-	maven { url "https://repo.grails.org/grails/core" }
+    if (project.projectVersion.endsWith('-SNAPSHOT')) {
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    }
 }
 
 configurations {
@@ -33,20 +44,20 @@ configurations {
 }
 
 dependencies {
-	implementation "org.grails:grails-web-databinding"
-	implementation "org.grails:grails-plugin-validation"
-	implementation "org.grails:grails-datastore-core:$gormGspVersion"
-	implementation "org.grails:grails-datastore-gorm:$gormGspVersion"
-	implementation "org.grails:grails-web-gsp:$grailsGspVersion"
-	implementation "org.grails:grails-scaffolding-core:$scaffoldingVersion"
+	implementation "org.graceframework:grace-web-databinding:$graceVersion"
+	implementation "org.graceframework:grace-plugin-validation:$graceVersion"
+	implementation "org.graceframework:grace-datastore-core:$gormVersion"
+	implementation "org.graceframework:grace-datastore-gorm:$gormVersion"
+	implementation "org.graceframework:grace-web-gsp:$graceGspVersion"
+	implementation "org.graceframework:grace-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
-	compileOnly "org.grails:grails-boot"
+	compileOnly "org.graceframework:grace-boot:$graceVersion"
 	compileOnly "javax.servlet:javax.servlet-api:$servletApiVersion"
 
     documentation "org.fusesource.jansi:jansi:1.14"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
-	testImplementation "org.grails:grails-test-support"
+	testImplementation "org.graceframework:grace-test-support"
 	testImplementation 'javassist:javassist:3.12.0.GA'
 	testImplementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 	testImplementation "cglib:cglib-nodep:$cglibNodepVersion"
@@ -62,24 +73,111 @@ groovydoc.doFirst {
 
 bootJar.enabled = false
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 jar {
     enabled = true
     archiveClassifier.set('')
 }
 
-grailsPublish {
-	userOrg = "grails"
-	githubSlug = project.githubSlug
-	license {
-		name = 'Apache-2.0'
-	}
-	title = project.title
-	desc = project.projectDesc
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'fields'
+            version = project.version
 
-	developers = [
-			graemerocher: "Graeme Rocher",
-			robfletcher: "Rob Fletcher",
-			sbglasius: "Søren Berg Glasius"
-	]
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+
+            from components.java
+
+            pom {
+                name = "Grace Fields Plugin"
+                description = "Customizable form-field rendering based on overrideable GSP template"
+                url = 'https://github.com/graceframework/grace-fields'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'rainboyan'
+                        name = 'Michael Yan'
+                        email = 'rain@rainboyan.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/graceframework/grace-fields.git'
+                    developerConnection = 'scm:git:ssh://github.com:graceframework/grace-fields.git'
+                    url = 'https://github.com/graceframework/grace-fields/tree/main'
+                }
+            }
+
+            pom.withXml {
+                def pomNode = asNode()
+
+                try {
+                    pomNode.dependencyManagement.replaceNode {}
+                } catch (Throwable e) {
+                    // ignore
+                }
+
+                // simply remove dependencies without a version
+                // version-less dependencies are handled with dependencyManagement
+                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                pomNode.dependencies.dependency.findAll {
+                    it.version.text().isEmpty()
+                }.each {
+                    try {
+                        it.replaceNode {}
+                    } catch (Throwable e) {
+                        // ignore
+                    }
+                }
+            }
+        }
+    }
 }
 
+nexusPublishing {
+    repositories {
+        sonatype {
+            def ossUser = System.getenv("SONATYPE_USERNAME") ?: project.hasProperty("sonatypeOssUsername") ? project.sonatypeOssUsername : ''
+            def ossPass = System.getenv("SONATYPE_PASSWORD") ?: project.hasProperty("sonatypeOssPassword") ? project.sonatypeOssPassword : ''
+            def ossStagingProfileId = System.getenv("SONATYPE_STAGING_PROFILE_ID") ?: project.hasProperty("sonatypeOssStagingProfileId") ? project.sonatypeOssStagingProfileId : ''
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            username = ossUser
+            password = ossPass
+            stagingProfileId = ossStagingProfileId
+        }
+    }
+}
+
+afterEvaluate {
+    signing {
+        required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.maven
+    }
+}
+
+jar {
+    enabled = true
+    archiveClassifier.set('')
+    includeEmptyDirs = false
+}
