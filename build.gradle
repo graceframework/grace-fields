@@ -46,7 +46,7 @@ dependencies {
 	implementation "org.graceframework:grace-plugin-validation"
 	implementation "org.graceframework:grace-datastore-core:$gormVersion"
 	implementation "org.graceframework:grace-datastore-gorm:$gormVersion"
-	implementation "org.graceframework:grace-web-gsp:$graceGspVersion"
+	implementation "org.graceframework:grace-web-gsp"
 	implementation "org.graceframework:grace-scaffolding-core:$scaffoldingVersion"
 	implementation "commons-lang:commons-lang:2.6"
 	compileOnly "org.graceframework:grace-boot"
