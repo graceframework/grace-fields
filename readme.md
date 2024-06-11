@@ -1,16 +1,19 @@
-[![Build Status](https://travis-ci.org/grails-fields-plugin/grails-fields.svg?branch=master)](https://travis-ci.org/grails-fields-plugin/grails-fields) [![Join the chat at https://gitter.im/grails-fields-plugin/grails-fields](https://badges.gitter.im/grails-fields-plugin/grails-fields.svg)](https://gitter.im/grails-fields-plugin/grails-fields?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Grace CI](https://github.com/graceframework/grace-fields/workflows/Grace%20CI/badge.svg?style=flat)](https://github.com/graceframework/grace-fields/actions?query=workflow%3A%Grace+CI%22)
+[![Apache 2.0 license](https://img.shields.io/badge/License-APACHE%202.0-green.svg?logo=APACHE&style=flat)](https://opensource.org/licenses/Apache-2.0)
+[![Latest version on Maven Central](https://img.shields.io/maven-central/v/org.graceframework.plugins/fields.svg?label=Maven%20Central&logo=apache-maven&style=flat)](https://search.maven.org/search?q=g:org.graceframework.plugins)
+[![Grace on X](https://img.shields.io/twitter/follow/graceframework?style=social)](https://twitter.com/graceframework)
 
-- `master` branch for Grails 4.0.
-- `2.2.x` y `2.1.x` for Grails 3. 
-- `grails2.x` for Grails 2.
+# Grace Fields Plugin
 
-A spiritual successor to the [bean-fields plugin](http://grails.org/plugin/bean-fields) that attempts to provide a configurable way to render forms with appropriate inputs for different properties without having to copy and paste lots of boilerplate code. It should be possible to change the rendering for a field with the minimum of impact on any other code. This plugin attempts to achieve that by using GSP templates looked up by convention. Developers can then create templates for rendering particular properties or types of properties with the former overriding the latter.
+This plugin attempts to achieve that by using GSP templates looked up by convention.
+Developers can then create templates for rendering particular properties or types of properties with the former overriding the latter.
 
-For further information please see the full documentation.
+## License
 
-Documentation can be found here:
+This plugin is available as open source under the terms of the [APACHE LICENSE, VERSION 2.0](http://apache.org/Licenses/LICENSE-2.0)
 
-- [Stable](https://grails-fields-plugin.github.io/grails-fields/latest) version
-- [Snapshot](https://grails-fields-plugin.github.io/grails-fields/snapshot) version
+## Links
 
-
+- [Grace Framework](https://github.com/graceframework/grace-framework)
+- [Grace Plugins](https://github.com/grace-plugins)
+- [Grace Scaffolding Plugin](https://github.com/graceframework/grace-scaffolding)

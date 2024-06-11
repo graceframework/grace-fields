@@ -24,7 +24,7 @@ class FieldsGrailsPlugin extends Plugin {
 
 	static final String CONSTRAINTS_EVALULATOR_BEAN_NAME = 'validateableConstraintsEvaluator'
 
-	def grailsVersion = '3.0 > *'
+	def grailsVersion = '2023.0.0 > *'
 
 	def loadAfter = ['domainClass']
 
@@ -34,7 +34,7 @@ class FieldsGrailsPlugin extends Plugin {
 		formFieldsTemplateService(FormFieldsTemplateService)
 		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
 		domainModelService(DomainModelServiceImpl) {
-			domainPropertyFactory: ref(fieldsDomainPropertyFactory)
+			domainPropertyFactory = ref(fieldsDomainPropertyFactory)
 		}
 	}}
 }
