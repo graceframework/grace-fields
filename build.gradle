@@ -167,6 +167,6 @@ afterEvaluate {
 
 jar {
     enabled = true
-    archiveClassifier.set('')
+    archiveClassifier.set('plugin')
     includeEmptyDirs = false
 }
