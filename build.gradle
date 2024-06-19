@@ -106,6 +106,9 @@ publishing {
 
             from components.java
 
+            artifact source:"${sourceSets.main.groovy.outputDir}/META-INF/grails-plugin.xml",
+                    classifier:"plugin",
+                    extension:'xml'
             pom {
                 name = "Grace Fields Plugin"
                 description = "Customizable form-field rendering based on overrideable GSP template"
