@@ -12,6 +12,17 @@
 This plugin attempts to achieve that by using GSP templates looked up by convention.
 Developers can then create templates for rendering particular properties or types of properties with the former overriding the latter.
 
+## Versions
+
+To make it easier for users to use and upgrade, Plugin adopts a version policy consistent with the [Grace Framework](https://github.com/graceframework/grace-framework).
+
+| Plugin Version | Grace Version |
+|----------------|---------------|
+| 6.0.x          | 2023.0.x      |
+| 5.2.x          | 2022.2.x      |
+| 5.1.x          | 2022.1.x      |
+| 5.0.x          | 2022.0.x      |
+
 ## License
 
 This plugin is available as open source under the terms of the [APACHE LICENSE, VERSION 2.0](http://apache.org/Licenses/LICENSE-2.0)
