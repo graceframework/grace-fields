@@ -57,7 +57,7 @@ dependencies {
 	compileOnly "org.graceframework:grace-boot"
 	compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 
-    documentation "org.fusesource.jansi:jansi:1.14"
+    documentation "org.fusesource.jansi:jansi:$jansiVersion"
 	documentation "com.github.javaparser:javaparser-core:3.15.14"
 
 	testImplementation "org.graceframework:grace-test-support"
