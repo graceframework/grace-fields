@@ -1,5 +1,6 @@
 package grails.plugin.formfields.taglib
 
+import groovy.xml.XmlSlurper
 import grails.converters.XML
 import grails.plugin.formfields.FormFieldsTagLib
 import grails.plugin.formfields.FormFieldsTemplateService

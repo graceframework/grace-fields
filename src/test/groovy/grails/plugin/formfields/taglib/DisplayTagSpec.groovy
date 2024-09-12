@@ -1,5 +1,6 @@
 package grails.plugin.formfields.taglib
 
+import groovy.xml.XmlSlurper
 import grails.plugin.formfields.FormFieldsTagLib
 import grails.plugin.formfields.FormFieldsTemplateService
 import grails.plugin.formfields.mock.Author
