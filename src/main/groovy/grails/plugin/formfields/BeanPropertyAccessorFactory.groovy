@@ -55,7 +55,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 	private ProxyHandler proxyHandler
 
 	@Autowired
-	private DomainPropertyFactory fieldsDomainPropertyFactory
+	private DomainPropertyFactory domainPropertyFactory
 
 	@Autowired
 	private MappingContext grailsDomainClassMappingContext
@@ -107,7 +107,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 			}
 
 			if (persistentProperty != null) {
-				fieldsDomainPropertyFactory.build(persistentProperty)
+				domainPropertyFactory.build(persistentProperty)
 			} else {
 				params.entity = beanClass
 				params.beanType = beanWrapper.wrappedClass

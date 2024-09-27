@@ -17,8 +17,6 @@ package grails.plugin.formfields
 
 import grails.plugins.Plugin
 
-import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
-
 class FieldsGrailsPlugin extends Plugin {
 
 	static final String CONSTRAINTS_EVALULATOR_BEAN_NAME = 'validateableConstraintsEvaluator'
@@ -31,6 +29,5 @@ class FieldsGrailsPlugin extends Plugin {
 	Closure doWithSpring() {{->
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory)
 		formFieldsTemplateService(FormFieldsTemplateService)
-		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
 	}}
 }

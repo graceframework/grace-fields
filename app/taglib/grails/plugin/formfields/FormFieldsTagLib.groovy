@@ -60,7 +60,7 @@ class FormFieldsTagLib {
 
 	FormFieldsTemplateService formFieldsTemplateService
 	BeanPropertyAccessorFactory beanPropertyAccessorFactory
-	DomainPropertyFactory fieldsDomainPropertyFactory
+	DomainPropertyFactory domainPropertyFactory
 
 	@Autowired(required = false)
 	Collection<MappingContext> mappingContexts
@@ -546,7 +546,7 @@ class FormFieldsTagLib {
 			}
 			def orderBy = getList(attrs.order)
 			properties = orderBy.collect { propertyName ->
-				fieldsDomainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
+				domainPropertyFactory.build(domainClass.getPropertyByName(propertyName))
 			}
 		} else {
 			properties = list ? domainModelService.getListOutputProperties(domainClass) : domainModelService.getInputProperties(domainClass)

@@ -39,16 +39,16 @@ abstract class AbstractFormFieldsTagLibSpec extends Specification implements Gra
 			grailsTagDateHelper(DefaultGrailsTagDateHelper)
 			//constraintsEvaluator(DefaultConstraintEvaluator)
 			def dpf = new DomainPropertyFactoryImpl(grailsDomainClassMappingContext: applicationContext.getBean("grailsDomainClassMappingContext", MappingContext), trimStrings: true, convertEmptyStringsToNull: true)
-			fieldsDomainPropertyFactory(InstanceFactoryBean, dpf, DomainPropertyFactory)
+			domainPropertyFactory(InstanceFactoryBean, dpf, DomainPropertyFactory)
 
 			domainModelService(DomainModelServiceImpl) {
-				domainPropertyFactory = ref('fieldsDomainPropertyFactory')
+				domainPropertyFactory = ref('domainPropertyFactory')
 			}
 			beanPropertyAccessorFactory(BeanPropertyAccessorFactory) {
 				constraintsEvaluator = ref(FieldsGrailsPlugin.CONSTRAINTS_EVALULATOR_BEAN_NAME)
 				proxyHandler = new DefaultProxyHandler()
 				grailsDomainClassMappingContext = ref("grailsDomainClassMappingContext")
-				fieldsDomainPropertyFactory = ref('fieldsDomainPropertyFactory')
+				domainPropertyFactory = ref('domainPropertyFactory')
 			}
 		}
 	}
