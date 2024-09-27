@@ -17,7 +17,6 @@ package grails.plugin.formfields
 
 import grails.plugins.Plugin
 
-import org.grails.scaffolding.model.DomainModelServiceImpl
 import org.grails.scaffolding.model.property.DomainPropertyFactoryImpl
 
 class FieldsGrailsPlugin extends Plugin {
@@ -33,8 +32,5 @@ class FieldsGrailsPlugin extends Plugin {
 		beanPropertyAccessorFactory(BeanPropertyAccessorFactory)
 		formFieldsTemplateService(FormFieldsTemplateService)
 		fieldsDomainPropertyFactory(DomainPropertyFactoryImpl)
-		domainModelService(DomainModelServiceImpl) {
-			domainPropertyFactory = ref(fieldsDomainPropertyFactory)
-		}
 	}}
 }
