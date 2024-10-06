@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Rob Fletcher
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package grails.plugin.formfields
 
 import grails.core.GrailsApplication
@@ -28,7 +27,6 @@ import org.grails.scaffolding.model.property.Constrained
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.grails.web.util.GrailsApplicationAttributes
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -39,14 +37,17 @@ class FormFieldsTemplateService {
     public static final String SETTING_WIDGET_PREFIX = 'grails.plugin.fields.widgetPrefix'
     private static final String THEMES_FOLDER = "_themes"
 
-    @Autowired
-    GrailsApplication grailsApplication
+    private final GrailsApplication grailsApplication
+    private final GrailsConventionGroovyPageLocator groovyPageLocator
+    private final GrailsPluginManager pluginManager
 
-    @Autowired
-    GrailsConventionGroovyPageLocator groovyPageLocator
-
-    @Autowired
-    GrailsPluginManager pluginManager
+    FormFieldsTemplateService(GrailsApplication grailsApplication,
+                              GrailsPluginManager pluginManager,
+                              GrailsConventionGroovyPageLocator groovyPageLocator) {
+        this.grailsApplication = grailsApplication
+        this.groovyPageLocator = groovyPageLocator
+        this.pluginManager = pluginManager
+    }
 
     String getWidgetPrefix(){
         Closure widgetPrefixNameResolver = getWidgetPrefixName
@@ -78,19 +79,19 @@ class FormFieldsTemplateService {
         return grailsApplication?.config?.getProperty("grails.plugin.fields.$templateProperty", templateProperty) ?: templateProperty
     }
 
-	@Lazy
-	private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
+    @Lazy
+    private Closure findTemplateCached = shouldCache() ? findTemplateCacheable.memoize() : findTemplateCacheable
 
     private findTemplateCacheable = {BeanPropertyAccessor propertyAccessor, String controllerNamespace, String controllerName, String actionName, String templateName, String templatesFolder, String themeName->
-		List<String> candidatePaths
-		if (themeName) {
-			//if theme is specified, first resolve all theme paths and then all the default paths
-			String themeFolder = THEMES_FOLDER + "/" + themeName
-			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
-			candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-		} else {
-			candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
-		}
+        List<String> candidatePaths
+        if (themeName) {
+            //if theme is specified, first resolve all theme paths and then all the default paths
+            String themeFolder = THEMES_FOLDER + "/" + themeName
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, themeFolder)
+            candidatePaths = candidatePaths + candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+        } else {
+            candidatePaths = candidateTemplatePaths(propertyAccessor, controllerNamespace, controllerName, actionName, templateName, templatesFolder, null)
+        }
 
         candidatePaths.findResult {String path ->
             log.debug "looking for template with path $path"

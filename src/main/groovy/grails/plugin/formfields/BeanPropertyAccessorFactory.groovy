@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Rob Fletcher
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package grails.plugin.formfields
+
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 
 import grails.core.GrailsApplication
 import grails.gorm.validation.DefaultConstrainedProperty
 import groovy.transform.PackageScope
-import grails.core.support.GrailsApplicationAware
 import grails.core.support.proxy.ProxyHandler
 import org.grails.datastore.gorm.validation.constraints.eval.ConstraintsEvaluator
 import org.grails.datastore.gorm.validation.constraints.registry.DefaultConstraintRegistry
@@ -34,31 +35,31 @@ import org.grails.scaffolding.model.property.DomainPropertyFactory
 import org.springframework.beans.BeanWrapper
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.beans.PropertyAccessorFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.context.annotation.Lazy
 import org.springframework.context.support.StaticMessageSource
 
 import java.lang.reflect.ParameterizedType
 import java.util.regex.Pattern
 
-class BeanPropertyAccessorFactory implements GrailsApplicationAware {
+@CompileStatic
+class BeanPropertyAccessorFactory {
 
 	private GrailsApplication grailsApplication
-
-	@Lazy
-	@Autowired
-	@Qualifier('validateableConstraintsEvaluator')
 	private ConstraintsEvaluator constraintsEvaluator
-
-	@Autowired
 	private ProxyHandler proxyHandler
-
-	@Autowired
 	private DomainPropertyFactory domainPropertyFactory
-
-	@Autowired
 	private MappingContext grailsDomainClassMappingContext
+
+	BeanPropertyAccessorFactory(GrailsApplication grailsApplication,
+								MappingContext grailsDomainClassMappingContext,
+								ConstraintsEvaluator constraintsEvaluator,
+								DomainPropertyFactory domainPropertyFactory,
+								ProxyHandler proxyHandler) {
+		this.grailsApplication = grailsApplication
+		this.constraintsEvaluator = constraintsEvaluator
+		this.proxyHandler = proxyHandler
+		this.domainPropertyFactory = domainPropertyFactory
+		this.grailsDomainClassMappingContext = grailsDomainClassMappingContext
+	}
 
 	BeanPropertyAccessor accessorFor(bean, String propertyPath) {
 		if (bean == null) {
@@ -72,7 +73,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		grailsDomainClassMappingContext.getPersistentEntity(beanClass.name)
 	}
 
-	private BeanPropertyAccessor resolvePropertyFromPath(bean, String pathFromRoot) {
+	private BeanPropertyAccessor resolvePropertyFromPath(Object bean, String pathFromRoot) {
 		def beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean)
 		def pathElements = pathFromRoot.tokenize(".")
 
@@ -81,14 +82,14 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		DomainProperty domainProperty = resolvePropertyFromPathComponents(beanWrapper, pathElements, params)
 
 		if (domainProperty != null) {
-			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType, pathFromRoot, domainProperty)
+			new DelegatingBeanPropertyAccessorImpl(bean, params.value, params.propertyType as Class, pathFromRoot, domainProperty)
 		} else {
 			new BeanPropertyAccessorImpl(params)
 		}
 
 	}
 
-	private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, params) {
+	private DomainProperty resolvePropertyFromPathComponents(BeanWrapper beanWrapper, List<String> pathElements, Map<String, Object> params) {
 		def propertyName = pathElements.remove(0)
 		PersistentEntity beanClass = resolveDomainClass(beanWrapper.wrappedClass)
 		def propertyType = resolvePropertyType(beanWrapper, beanClass, propertyName)
@@ -114,7 +115,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 				params.propertyType = propertyType
 				params.propertyName = nameWithoutIndex
 				params.domainProperty = null
-				params.constraints = resolveConstraints(beanWrapper, params.propertyName)
+				params.constraints = resolveConstraints(beanWrapper, (String) params.propertyName)
 				null
 			}
 		} else {
@@ -130,13 +131,13 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		new Constrained(constraint)
 	}
 
-    private grails.gorm.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
-        def defaultConstraint = new DefaultConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName), new DefaultConstraintRegistry(new StaticMessageSource()))
-        defaultConstraint.nullable = true
+	private grails.gorm.validation.Constrained createDefaultConstraint(BeanWrapper beanWrapper, String propertyName) {
+		def defaultConstraint = new DefaultConstrainedProperty(beanWrapper.wrappedClass, propertyName, beanWrapper.getPropertyType(propertyName), new DefaultConstraintRegistry(new StaticMessageSource()))
+		defaultConstraint.nullable = true
 		defaultConstraint
-    }
+	}
 
-    private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {
+	private Class resolvePropertyType(BeanWrapper beanWrapper, PersistentEntity beanClass, String propertyName) {
 		Class propertyType = null
 		if (beanClass) {
 			propertyType = resolveDomainPropertyType(beanClass, propertyName)
@@ -168,6 +169,7 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 		}
 	}
 
+	@CompileDynamic
 	private Class resolveNonDomainPropertyType(BeanWrapper beanWrapper, String propertyName) {
 		def type = beanWrapper.getPropertyType(propertyName)
 		if (type == null) {
@@ -197,14 +199,11 @@ class BeanPropertyAccessorFactory implements GrailsApplicationAware {
 
 	private static final Pattern INDEXED_PROPERTY_PATTERN = ~/^(\w+)\[(.+)\]$/
 
+	@CompileDynamic
 	@PackageScope
 	static String stripIndex(String propertyName) {
 		def matcher = propertyName =~ INDEXED_PROPERTY_PATTERN
 		matcher.matches() ? matcher[0][1] : propertyName
 	}
 
-	@Override
-	void setGrailsApplication(GrailsApplication grailsApplication) {
-		this.grailsApplication = grailsApplication
-	}
 }
