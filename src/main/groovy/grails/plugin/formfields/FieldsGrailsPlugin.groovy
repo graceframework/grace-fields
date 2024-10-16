@@ -19,10 +19,17 @@ import grails.plugins.Plugin
 
 class FieldsGrailsPlugin extends Plugin {
 
-	static final String CONSTRAINTS_EVALULATOR_BEAN_NAME = 'validateableConstraintsEvaluator'
+    static final String CONSTRAINTS_EVALULATOR_BEAN_NAME = 'validateableConstraintsEvaluator'
 
-	def grailsVersion = '2023.0.0 > *'
+    def grailsVersion = '2023.0.0 > *'
 
-	def loadAfter = ['domainClass']
+    def loadAfter = ['domainClass']
+    def title = 'Grace Fields Plugin'
+    def description = 'Provides customizable form-field rendering based on overrideable GSP template'
+    def documentation = 'https://github.com/graceframework/grace-fields'
+
+    def license = 'APACHE'
+    def issueManagement = [system: 'Github', url: 'https://github.com/graceframework/grace-fields/issues']
+    def scm = [url: 'https://github.com/graceframework/grace-fields']
 
 }
